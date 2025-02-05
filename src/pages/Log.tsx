@@ -144,7 +144,7 @@ const Log = () => {
       const { data, error } = await supabase
         .from("custom_instructions")
         .select("*")
-        .eq('app_id', 'napoleon')  // Filtrando apenas instruções do app 'napoleon'
+        .eq('app_id', 'napoleon')  // Garantindo que apenas instruções da Napoleon sejam retornadas
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -162,7 +162,7 @@ const Log = () => {
           .from("custom_instructions")
           .update({ title, content })
           .eq("id", editingInstruction.id)
-          .eq('app_id', 'napoleon');
+          .eq('app_id', 'napoleon');  // Garantindo que apenas instruções da Napoleon sejam atualizadas
 
         if (error) throw error;
         toast({
@@ -184,7 +184,7 @@ const Log = () => {
           .insert([{ 
             title, 
             content,
-            app_id: 'napoleon',
+            app_id: 'napoleon',  // Garantindo que novas instruções sejam criadas para Napoleon
             user_id: userId
           }]);
 
@@ -220,7 +220,7 @@ const Log = () => {
         .from("custom_instructions")
         .delete()
         .eq("id", id)
-        .eq('app_id', 'napoleon');  // Ensure we only delete Napoleon's instructions
+        .eq('app_id', 'napoleon');  // Garantindo que apenas instruções da Napoleon sejam deletadas
 
       if (error) throw error;
 
