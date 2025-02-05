@@ -11,14 +11,12 @@ const ChatInput = ({ onSend, isLoading = false }: ChatInputProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Focus textarea when component mounts
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.focus();
     }
   }, []);
 
-  // Re-focus textarea when loading state changes
   useEffect(() => {
     if (!isLoading && textareaRef.current) {
       textareaRef.current.focus();
@@ -42,7 +40,6 @@ const ChatInput = ({ onSend, isLoading = false }: ChatInputProps) => {
 
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value);
-    // Auto-adjust height
     e.target.style.height = 'auto';
     const newHeight = Math.min(e.target.scrollHeight, 200);
     e.target.style.height = `${newHeight}px`;
@@ -59,7 +56,7 @@ const ChatInput = ({ onSend, isLoading = false }: ChatInputProps) => {
           onChange={handleTextareaChange}
           onKeyDown={handleKeyDown}
           placeholder="Envie uma mensagem para o GPT"
-          className={`w-full resize-none bg-[#2F2F2F] px-4 py-4 pr-12 focus:outline-none scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent ${isExpanded ? 'rounded-[5px]' : 'rounded-full'}`}
+          className={`w-full resize-none bg-[#2F2F2F] text-white placeholder-gray-400 px-4 py-4 pr-12 focus:outline-none scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent ${isExpanded ? 'rounded-[5px]' : 'rounded-full'}`}
           style={{
             minHeight: "56px",
             maxHeight: "200px",
