@@ -161,7 +161,8 @@ const Log = () => {
         const { error } = await supabase
           .from("custom_instructions")
           .update({ title, content })
-          .eq("id", editingInstruction.id);
+          .eq("id", editingInstruction.id)
+          .eq('app_id', 'napoleon'); // Mantendo o filtro para garantir que só atualizamos instruções da Napoleon
 
         if (error) throw error;
         toast({
@@ -218,7 +219,8 @@ const Log = () => {
       const { error } = await supabase
         .from("custom_instructions")
         .delete()
-        .eq("id", id);
+        .eq("id", id)
+        .eq('app_id', 'napoleon'); // Mantendo o filtro para garantir que só deletamos instruções da Napoleon
 
       if (error) throw error;
 
@@ -361,6 +363,6 @@ const Log = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Log;
