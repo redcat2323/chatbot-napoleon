@@ -144,7 +144,7 @@ const Log = () => {
       const { data, error } = await supabase
         .from("custom_instructions")
         .select("*")
-        .eq('app_id', 'napoleon')
+        .eq('app_id', 'napoleon')  // Filtrando apenas instruções do app 'napoleon'
         .order("created_at", { ascending: false });
 
       if (error) throw error;
