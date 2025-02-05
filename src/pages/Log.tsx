@@ -35,6 +35,7 @@ const Log = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [editingInstruction, setEditingInstruction] = useState<CustomInstruction | null>(null);
@@ -46,6 +47,7 @@ const Log = () => {
         navigate("/auth");
       } else {
         setIsAuthenticated(true);
+        setUserId(session.user.id);
       }
     };
 
@@ -54,6 +56,7 @@ const Log = () => {
         navigate("/auth");
       } else {
         setIsAuthenticated(true);
+        setUserId(session.user.id);
       }
     });
 
@@ -141,7 +144,7 @@ const Log = () => {
       const { data, error } = await supabase
         .from("custom_instructions")
         .select("*")
-        .eq('app_id', 'napoleon')  // Filter instructions for Napoleon app only
+        .eq('app_id', 'napoleon')
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -159,7 +162,7 @@ const Log = () => {
           .from("custom_instructions")
           .update({ title, content })
           .eq("id", editingInstruction.id)
-          .eq('app_id', 'napoleon');  // Ensure we only update Napoleon's instructions
+          .eq('app_id', 'napoleon');
 
         if (error) throw error;
         toast({
@@ -167,12 +170,22 @@ const Log = () => {
           description: "A instrução foi atualizada com sucesso.",
         });
       } else {
+        if (!userId) {
+          toast({
+            title: "Erro",
+            description: "Usuário não autenticado.",
+            variant: "destructive",
+          });
+          return;
+        }
+
         const { error } = await supabase
           .from("custom_instructions")
           .insert([{ 
             title, 
             content,
-            app_id: 'napoleon'  // Set app_id when creating new instructions
+            app_id: 'napoleon',
+            user_id: userId
           }]);
 
         if (error) throw error;
