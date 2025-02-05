@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -14,12 +15,42 @@ serve(async (req) => {
   try {
     const { messages } = await req.json();
     const apiKey = Deno.env.get('OPENAI_API_KEY');
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
-    if (!apiKey) {
-      throw new Error('API key is required');
+    if (!apiKey || !supabaseUrl || !supabaseServiceKey) {
+      throw new Error('Required environment variables are missing');
     }
 
-    console.log('Sending request to OpenAI:', { messages });
+    // Initialize Supabase client with service role key
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Fetch custom instructions
+    const { data: instructions, error: instructionsError } = await supabase
+      .from('custom_instructions')
+      .select('content')
+      .eq('app_id', 'napoleon');
+
+    if (instructionsError) {
+      console.error('Error fetching instructions:', instructionsError);
+      throw instructionsError;
+    }
+
+    // Combine all instruction contents into a single system message
+    const systemInstructions = instructions
+      .map(instruction => instruction.content)
+      .join('\n\n');
+
+    // Prepare messages array with system instructions
+    const allMessages = [
+      {
+        role: 'system',
+        content: `${systemInstructions}\n\nBe helpful and follow the instructions above.`
+      },
+      ...messages
+    ];
+
+    console.log('Sending request to OpenAI:', { messages: allMessages });
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -29,7 +60,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: 'gpt-4o-mini',
-        messages: messages,
+        messages: allMessages,
         max_tokens: 1024,
       }),
     });
