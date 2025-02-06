@@ -28,7 +28,7 @@ const HtmlPreview = ({ content }: HtmlPreviewProps) => {
   };
 
   return (
-    <div className="rounded-lg overflow-hidden border border-gray-700 bg-[#1e1e1e]">
+    <div className="rounded-[5px] overflow-hidden border border-gray-700 bg-[#1e1e1e]">
       <div className="flex items-center justify-between px-4 py-2 bg-[#2d2d2d]">
         <span className="text-gray-400">html</span>
         <button
