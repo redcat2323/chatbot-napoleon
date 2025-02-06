@@ -1,5 +1,6 @@
 import MessageAvatar from './MessageAvatar';
 import MessageActions from './MessageActions';
+import HtmlPreview from './HtmlPreview';
 
 type MessageProps = {
   role: 'user' | 'assistant';
@@ -8,7 +9,14 @@ type MessageProps = {
 };
 
 const Message = ({ role, content, isLoading = false }: MessageProps) => {
+  const isHtmlContent = content.trim().startsWith('```html') && content.includes('```');
+
   const formatContent = (text: string) => {
+    if (isHtmlContent) {
+      const htmlContent = text.replace('```html', '').replace('```', '').trim();
+      return <HtmlPreview content={htmlContent} />;
+    }
+
     return text
       .replace(/\*\*/g, '')
       .replace(/---/g, '\n')
