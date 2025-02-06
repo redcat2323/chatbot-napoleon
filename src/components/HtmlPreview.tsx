@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Copy, Edit } from 'lucide-react';
+import { Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 type HtmlPreviewProps = {
@@ -31,24 +31,14 @@ const HtmlPreview = ({ content }: HtmlPreviewProps) => {
     <div className="rounded-lg overflow-hidden border border-gray-700 bg-[#1e1e1e]">
       <div className="flex items-center justify-between px-4 py-2 bg-[#2d2d2d]">
         <span className="text-gray-400">html</span>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleCopy}
-            className="flex items-center gap-1 px-2 py-1 text-sm text-gray-400 hover:text-white transition-colors"
-            title="Copiar código"
-          >
-            <Copy className="h-4 w-4" />
-            Copiar
-          </button>
-          <button
-            onClick={() => setShowPreview(!showPreview)}
-            className="flex items-center gap-1 px-2 py-1 text-sm text-gray-400 hover:text-white transition-colors"
-            title={showPreview ? "Mostrar código" : "Mostrar preview"}
-          >
-            <Edit className="h-4 w-4" />
-            Editar
-          </button>
-        </div>
+        <button
+          onClick={handleCopy}
+          className="flex items-center gap-1 px-2 py-1 text-sm text-gray-400 hover:text-white transition-colors"
+          title="Copiar código"
+        >
+          <Copy className="h-4 w-4" />
+          Copiar
+        </button>
       </div>
       
       <div className="relative">
@@ -62,8 +52,8 @@ const HtmlPreview = ({ content }: HtmlPreviewProps) => {
             />
           </div>
         ) : (
-          <pre className="p-4 text-white overflow-x-auto">
-            <code className="text-[#569CD6]">{content.split('\n').map((line, i) => {
+          <pre className="p-4 text-white">
+            <code className="text-[#569CD6] break-words whitespace-pre-wrap">{content.split('\n').map((line, i) => {
               // Highlight HTML tags
               const highlightedLine = line
                 .replace(/(&lt;[^&]*&gt;)/g, '<span class="text-[#569CD6]">$1</span>')
@@ -71,7 +61,7 @@ const HtmlPreview = ({ content }: HtmlPreviewProps) => {
                 .replace(/(=[^"]*")/g, '<span class="text-[#9CDCFE]">$1</span>');
               
               return (
-                <div key={i} className="whitespace-pre">
+                <div key={i} className="whitespace-pre-wrap">
                   <span className="text-gray-600 select-none w-8 inline-block text-right pr-4">{i + 1}</span>
                   <span dangerouslySetInnerHTML={{ __html: highlightedLine }} />
                 </div>
