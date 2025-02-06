@@ -16,7 +16,9 @@ const Message = ({ role, content, isLoading = false }: MessageProps) => {
       const htmlContent = text
         .split('```html')[1]
         .split('```')[0]
-        .trim();
+        .trim()
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
       return <HtmlPreview content={htmlContent} />;
     }
 

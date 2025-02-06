@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Copy } from 'lucide-react';
+import { Copy, Edit } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 type HtmlPreviewProps = {
@@ -7,7 +7,7 @@ type HtmlPreviewProps = {
 };
 
 const HtmlPreview = ({ content }: HtmlPreviewProps) => {
-  const [showPreview, setShowPreview] = useState(true);
+  const [showPreview, setShowPreview] = useState(false);
   const { toast } = useToast();
 
   const handleCopy = async () => {
@@ -29,32 +29,26 @@ const HtmlPreview = ({ content }: HtmlPreviewProps) => {
 
   return (
     <div className="rounded-lg overflow-hidden border border-gray-700 bg-[#1e1e1e]">
-      <div className="flex items-center justify-between p-2 bg-[#2d2d2d] border-b border-gray-700">
-        <div className="flex gap-2">
+      <div className="flex items-center justify-between px-4 py-2 bg-[#2d2d2d]">
+        <span className="text-gray-400">html</span>
+        <div className="flex items-center gap-2">
           <button
-            onClick={() => setShowPreview(!showPreview)}
-            className={`px-3 py-1 rounded text-sm ${
-              showPreview ? 'bg-[#1e1e1e] text-white' : 'text-gray-400 hover:text-white'
-            }`}
+            onClick={handleCopy}
+            className="flex items-center gap-1 px-2 py-1 text-sm text-gray-400 hover:text-white transition-colors"
+            title="Copiar código"
           >
-            Prévia
+            <Copy className="h-4 w-4" />
+            Copiar
           </button>
           <button
             onClick={() => setShowPreview(!showPreview)}
-            className={`px-3 py-1 rounded text-sm ${
-              !showPreview ? 'bg-[#1e1e1e] text-white' : 'text-gray-400 hover:text-white'
-            }`}
+            className="flex items-center gap-1 px-2 py-1 text-sm text-gray-400 hover:text-white transition-colors"
+            title={showPreview ? "Mostrar código" : "Mostrar preview"}
           >
-            Código
+            <Edit className="h-4 w-4" />
+            Editar
           </button>
         </div>
-        <button
-          onClick={handleCopy}
-          className="p-1 text-gray-400 hover:text-white transition-colors"
-          title="Copiar código"
-        >
-          <Copy className="h-4 w-4" />
-        </button>
       </div>
       
       <div className="relative">
@@ -69,7 +63,20 @@ const HtmlPreview = ({ content }: HtmlPreviewProps) => {
           </div>
         ) : (
           <pre className="p-4 text-white overflow-x-auto">
-            <code>{content}</code>
+            <code className="text-[#569CD6]">{content.split('\n').map((line, i) => {
+              // Highlight HTML tags
+              const highlightedLine = line
+                .replace(/(&lt;[^&]*&gt;)/g, '<span class="text-[#569CD6]">$1</span>')
+                .replace(/("[^"]*")/g, '<span class="text-[#CE9178]">$1</span>')
+                .replace(/(=[^"]*")/g, '<span class="text-[#9CDCFE]">$1</span>');
+              
+              return (
+                <div key={i} className="whitespace-pre">
+                  <span className="text-gray-600 select-none w-8 inline-block text-right pr-4">{i + 1}</span>
+                  <span dangerouslySetInnerHTML={{ __html: highlightedLine }} />
+                </div>
+              );
+            })}</code>
           </pre>
         )}
       </div>
