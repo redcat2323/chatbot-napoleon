@@ -9,11 +9,14 @@ type MessageProps = {
 };
 
 const Message = ({ role, content, isLoading = false }: MessageProps) => {
-  const isHtmlContent = content.trim().startsWith('```html') && content.includes('```');
+  const isHtmlContent = content.includes('```html') && content.includes('```');
 
   const formatContent = (text: string) => {
     if (isHtmlContent) {
-      const htmlContent = text.replace('```html', '').replace('```', '').trim();
+      const htmlContent = text
+        .split('```html')[1]
+        .split('```')[0]
+        .trim();
       return <HtmlPreview content={htmlContent} />;
     }
 

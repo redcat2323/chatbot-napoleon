@@ -69,7 +69,7 @@ const HtmlPreview = ({ content }: HtmlPreviewProps) => {
           </div>
         ) : (
           <pre className="p-4 text-white overflow-x-auto">
-            <code className="language-html">{content}</code>
+            <code>{content}</code>
           </pre>
         )}
       </div>
