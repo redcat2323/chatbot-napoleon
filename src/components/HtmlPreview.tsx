@@ -16,7 +16,7 @@ const HtmlPreview = ({ content }: HtmlPreviewProps) => {
       toast({
         description: "Código copiado para a área de transferência",
         duration: 2000,
-        className: "bg-[#9b87f5] text-white border-none",
+        className: "bg-white text-black border-none",
       });
     } catch (err) {
       toast({
